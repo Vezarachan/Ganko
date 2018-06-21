@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MaterialSkin.Controls;
 
 namespace Ganko
 {
-    public partial class Form1 : Form
+    public partial class Ganko : MaterialForm
     {
-        public Form1()
+        public Ganko()
         {
             InitializeComponent();
         }
