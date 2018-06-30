@@ -45,7 +45,7 @@ namespace Ganko
         //更换主题使用的下标
         private int themeIndex;
         //更换颜色主题
-        private void button1_Click(object sender, EventArgs e)
+        public void button1_Click(object sender, EventArgs e)
         {
             themeIndex++;
             if (themeIndex > 4)

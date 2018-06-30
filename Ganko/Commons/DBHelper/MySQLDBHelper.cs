@@ -77,7 +77,7 @@ namespace Ganko.ApiProcessor
             var sqlimages = "INSERT INTO images VALUES (@_idimage, @imageurl);";
             try
             {
-                conn.OpenAsync();
+                conn.Open();
                 results.ForEach(item =>
                 {
                     MySqlParameter[] parameters =
@@ -119,7 +119,7 @@ namespace Ganko.ApiProcessor
             }
             finally
             {
-                conn.CloseAsync();
+                conn.Close();
             }
         }
 
@@ -134,7 +134,7 @@ namespace Ganko.ApiProcessor
             var sqlimages = "INSERT INTO images VALUES (@_idimage, @imageurl);";
             try
             {
-                conn.OpenAsync();
+                conn.Open();
                 MySqlParameter[] sqlParameters =
                 {
                     new MySqlParameter("@_id", result._id),
@@ -174,7 +174,7 @@ namespace Ganko.ApiProcessor
             }
             finally
             {
-                conn.CloseAsync();
+                conn.Close();
             }
         }
 
@@ -189,7 +189,7 @@ namespace Ganko.ApiProcessor
             var ResultList = new List<T>();
             try
             {
-                conn.OpenAsync();
+                conn.Open();
                 var sqlcmd = new MySqlCommand(sqlGetResult, conn);
                 var sqlReader = sqlcmd.ExecuteReader();
                 while (sqlReader.Read())
@@ -217,7 +217,7 @@ namespace Ganko.ApiProcessor
             }
             finally
             {
-                conn.CloseAsync();
+                conn.Close();
             }
         }
 
@@ -233,7 +233,7 @@ namespace Ganko.ApiProcessor
             List<string> imageUrlList = new List<string>();
             try
             {
-                conn.OpenAsync();
+                conn.Open();
                 var sqlcmd = new MySqlCommand(sqlGetImages, conn);
                 sqlcmd.Parameters.Add(sqlParameter);
                 var sqlReader = sqlcmd.ExecuteReader();
@@ -252,7 +252,7 @@ namespace Ganko.ApiProcessor
             }
             finally
             {
-                conn.CloseAsync();
+                conn.Close();
             }
         }
 
@@ -262,14 +262,14 @@ namespace Ganko.ApiProcessor
         /// <typeparam name="T"></typeparam>
         /// <param name="who"></param>
         /// <returns></returns>
-        public List<T> GetResultByWho<T>(string who) where T : ResultModel, new()
+        public List<T> GetResultExceptImagesByWho<T>(string who) where T : ResultModel, new()
         {
-            var sqlGetImages = "SELECT * FROM images WHERE who = @who";
+            var sqlGetImages = "SELECT * FROM resultTbl WHERE who = @who";
             var sqlParameter = new MySqlParameter("@who", MySqlDbType.VarChar, 40, who);
             List<T> ResultList = new List<T>();
             try
             {
-                conn.OpenAsync();
+                conn.Open();
                 var sqlcmd = new MySqlCommand(sqlGetImages, conn);
                 sqlcmd.Parameters.Add(sqlParameter);
                 var sqlReader = sqlcmd.ExecuteReader();
@@ -298,7 +298,60 @@ namespace Ganko.ApiProcessor
             }
             finally
             {
-                conn.CloseAsync();
+                conn.Close();
+            }
+        }
+
+        /// <summary>
+        /// 根据发布时间返回某年某月结果根据发布年月返回结果
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public List<T> GetResultExceptImagesByPublishedAt<T>(DateTime dateTime) where T : ResultModel, new()
+        {
+            var sqlGetResult = "SELECT * FROM resultTbl WHERE YEAR(publishedAt) = @YEAR AND MONTH(publishedAt) = @MONTH";
+            var year = dateTime.Year;
+            var month = dateTime.Month;
+            List<T> ResultList = new List<T>();
+            try
+            {
+                MySqlParameter[] sqlParameter =
+                {
+                    new MySqlParameter("@YEAR", year),
+                    new MySqlParameter("@MONTH", month)
+                };
+
+                conn.Open();
+                var sqlCmd = new MySqlCommand(sqlGetResult, conn);
+                sqlCmd.Parameters.AddRange(sqlParameter);
+                var sqlReader = sqlCmd.ExecuteReader();
+                while (sqlReader.Read())
+                {
+                    var result = new T();
+                    result._id = sqlReader.GetString(0);
+                    result.createdAt = sqlReader.GetDateTime(1);
+                    result.desc = sqlReader.GetString(2);
+                    result.publishedAt = sqlReader.GetDateTime(3);
+                    result.source = sqlReader.GetString(4);
+                    result.type = sqlReader.GetString(5);
+                    result.url = sqlReader.GetString(6);
+                    result.used = sqlReader.GetString(7);
+                    result.who = sqlReader.GetString(8);
+                    result.images = null;
+                    ResultList.Add(result);
+                }
+
+                return ResultList;
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                conn.Close();
             }
         }
     }

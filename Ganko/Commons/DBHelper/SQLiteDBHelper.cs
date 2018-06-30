@@ -18,7 +18,7 @@ namespace Ganko.Commons.DBHelper
         private SQLiteDBHelper()
         {
             SQLiteConnectionStringBuilder sqLiteConnectionString = new SQLiteConnectionStringBuilder();
-            sqLiteConnectionString.DataSource = Application.CommonAppDataPath + "/DataBase/gankoDB.db";
+            sqLiteConnectionString.DataSource = "gankDB.db";
             sqLiteConnectionString.Version = 3;
             conn.ConnectionString = sqLiteConnectionString.ConnectionString;
         }
@@ -42,7 +42,7 @@ namespace Ganko.Commons.DBHelper
             }
         }
 
-        public SQLiteConnection connection
+        public SQLiteConnection Conn
         {
             get { return conn; }
         }

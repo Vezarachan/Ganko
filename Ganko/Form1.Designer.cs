@@ -51,12 +51,12 @@ namespace Ganko
             this.splitContainer6 = new System.Windows.Forms.SplitContainer();
             this.listBox4 = new System.Windows.Forms.ListBox();
             this.geckoWebBrowser4 = new Gecko.GeckoWebBrowser();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
             this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Back = new System.Windows.Forms.ToolStripButton();
@@ -304,15 +304,6 @@ namespace Ganko
             this.geckoWebBrowser4.TabIndex = 0;
             this.geckoWebBrowser4.UseHttpActivityObserver = false;
             // 
-            // tabPage6
-            // 
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(893, 411);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "Favorite";
-            this.tabPage6.UseVisualStyleBackColor = true;
-            // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.label3);
@@ -371,6 +362,15 @@ namespace Ganko
             this.button1.Text = "Change";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(893, 411);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "Favorite";
+            this.tabPage6.UseVisualStyleBackColor = true;
             // 
             // materialTabSelector1
             // 
