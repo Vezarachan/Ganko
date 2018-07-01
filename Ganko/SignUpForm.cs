@@ -12,11 +12,10 @@ using MaterialSkin.Controls;
 
 namespace Ganko
 {
-    public partial class LoginForm : MaterialForm
+    public partial class SignUpForm : MaterialForm
     {
-        //声明UI管理器
         private readonly MaterialSkinManager materialSkinManager = MaterialSkinManager.Instance;
-        public LoginForm()
+        public SignUpForm()
         {
             InitializeComponent();
             materialSkinManager.AddFormToManage(this);
@@ -24,7 +23,7 @@ namespace Ganko
             materialSkinManager.ColorScheme = new ColorScheme(Primary.BlueGrey800, Primary.BlueGrey900, Primary.BlueGrey500, Accent.LightBlue200, TextShade.WHITE);
         }
 
-        private void LoginCancel_Click(object sender, EventArgs e)
+        private void SignUpCancelBtn_Click(object sender, EventArgs e)
         {
             Close();
         }

@@ -34,8 +34,9 @@ namespace Ganko
             this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
             this.materialSingleLineTextField1 = new MaterialSkin.Controls.MaterialSingleLineTextField();
             this.materialSingleLineTextField2 = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.SignInBtn = new System.Windows.Forms.Button();
+            this.LoginCancel = new System.Windows.Forms.Button();
+            this.materialFlatButton1 = new MaterialSkin.Controls.MaterialFlatButton();
             this.SuspendLayout();
             // 
             // materialLabel1
@@ -94,41 +95,59 @@ namespace Ganko
             this.materialSingleLineTextField2.TabIndex = 3;
             this.materialSingleLineTextField2.UseSystemPasswordChar = false;
             // 
-            // button1
+            // SignInBtn
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(216)))), ((int)(((byte)(182)))));
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button1.ForeColor = System.Drawing.SystemColors.Control;
-            this.button1.Location = new System.Drawing.Point(35, 263);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(226, 32);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "OK";
-            this.button1.UseVisualStyleBackColor = false;
+            this.SignInBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(216)))), ((int)(((byte)(182)))));
+            this.SignInBtn.FlatAppearance.BorderSize = 0;
+            this.SignInBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SignInBtn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.SignInBtn.ForeColor = System.Drawing.SystemColors.Control;
+            this.SignInBtn.Location = new System.Drawing.Point(36, 240);
+            this.SignInBtn.Name = "SignInBtn";
+            this.SignInBtn.Size = new System.Drawing.Size(226, 32);
+            this.SignInBtn.TabIndex = 4;
+            this.SignInBtn.Text = "Sign In";
+            this.SignInBtn.UseVisualStyleBackColor = false;
             // 
-            // button2
+            // LoginCancel
             // 
-            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
-            this.button2.FlatAppearance.BorderSize = 0;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button2.ForeColor = System.Drawing.SystemColors.Control;
-            this.button2.Location = new System.Drawing.Point(35, 301);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(226, 32);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = false;
+            this.LoginCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
+            this.LoginCancel.FlatAppearance.BorderSize = 0;
+            this.LoginCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.LoginCancel.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.LoginCancel.ForeColor = System.Drawing.SystemColors.Control;
+            this.LoginCancel.Location = new System.Drawing.Point(36, 278);
+            this.LoginCancel.Name = "LoginCancel";
+            this.LoginCancel.Size = new System.Drawing.Size(226, 32);
+            this.LoginCancel.TabIndex = 5;
+            this.LoginCancel.Text = "Cancel";
+            this.LoginCancel.UseVisualStyleBackColor = false;
+            this.LoginCancel.Click += new System.EventHandler(this.LoginCancel_Click);
+            // 
+            // materialFlatButton1
+            // 
+            this.materialFlatButton1.AutoSize = true;
+            this.materialFlatButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.materialFlatButton1.Depth = 0;
+            this.materialFlatButton1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.materialFlatButton1.Location = new System.Drawing.Point(198, 315);
+            this.materialFlatButton1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.materialFlatButton1.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialFlatButton1.Name = "materialFlatButton1";
+            this.materialFlatButton1.Primary = false;
+            this.materialFlatButton1.Size = new System.Drawing.Size(64, 36);
+            this.materialFlatButton1.TabIndex = 6;
+            this.materialFlatButton1.Text = "Sign Up";
+            this.materialFlatButton1.UseVisualStyleBackColor = true;
             // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(300, 355);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.materialFlatButton1);
+            this.Controls.Add(this.LoginCancel);
+            this.Controls.Add(this.SignInBtn);
             this.Controls.Add(this.materialSingleLineTextField2);
             this.Controls.Add(this.materialSingleLineTextField1);
             this.Controls.Add(this.materialLabel2);
@@ -146,7 +165,8 @@ namespace Ganko
         private MaterialSkin.Controls.MaterialLabel materialLabel2;
         private MaterialSkin.Controls.MaterialSingleLineTextField materialSingleLineTextField1;
         private MaterialSkin.Controls.MaterialSingleLineTextField materialSingleLineTextField2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button SignInBtn;
+        private System.Windows.Forms.Button LoginCancel;
+        private MaterialSkin.Controls.MaterialFlatButton materialFlatButton1;
     }
 }

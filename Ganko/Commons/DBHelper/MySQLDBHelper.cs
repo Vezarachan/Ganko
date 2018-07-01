@@ -66,6 +66,8 @@ namespace Ganko.ApiProcessor
             }
         }
 
+        #region Add Data to DB
+
         /// <summary>
         /// 插入所有的结果
         /// </summary>
@@ -102,12 +104,12 @@ namespace Ganko.ApiProcessor
                                 new MySqlParameter("@_idimage", item._id),
                                 new MySqlParameter("@imageurl", image),
                             };
-                            MySqlCommand sqlImageCmd = new MySqlCommand(sqlimages, conn);
+                            var sqlImageCmd = new MySqlCommand(sqlimages, conn);
                             sqlImageCmd.Parameters.AddRange(imageparameters);
                             sqlImageCmd.ExecuteNonQuery();
                         });
                     }
-                    
+
                     MySqlCommand sqlCmd = new MySqlCommand(sqlmain, conn);
                     sqlCmd.Parameters.AddRange(parameters);
                     sqlCmd.ExecuteNonQuery();
@@ -157,7 +159,7 @@ namespace Ganko.ApiProcessor
                             new MySqlParameter("@_idimage", result._id),
                             new MySqlParameter("@imageurl", image),
                         };
-                        MySqlCommand sqlImageCmd = new MySqlCommand(sqlimages, conn);
+                        var sqlImageCmd = new MySqlCommand(sqlimages, conn);
                         sqlImageCmd.Parameters.AddRange(imagesParameter);
                         sqlImageCmd.ExecuteNonQuery();
                     });
@@ -179,13 +181,47 @@ namespace Ganko.ApiProcessor
         }
 
         /// <summary>
+        /// 注册添加用户
+        /// </summary>
+        /// <param name="user"></param>
+        public void AddUser(User user)
+        {
+            var sqlAdd = "INSERT INTO usrLogin VALUES (@account, @password)";
+            try
+            {
+                MySqlParameter[] sqlParameters =
+                {
+                    new MySqlParameter("@account", MySqlDbType.VarChar, 80, user.Account),
+                    new MySqlParameter("@password", MySqlDbType.VarChar, 100, user.Password) 
+                };
+                conn.Open();
+                var sqlCmd = new MySqlCommand(sqlAdd, conn);
+                sqlCmd.Parameters.AddRange(sqlParameters);
+                sqlCmd.ExecuteNonQuery();
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        #endregion
+
+        #region Get Data From DB
+
+        /// <summary>
         /// 根据类别获取结果（除图片urls）
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public List<T> GetResultExceptImagesByCategory<T>() where T : ResultModel, new()
         {
-            var sqlGetResult = $"SELECT * FROM resultTbl WHERE typeof = '{typeof(T).Name}' ORDER BY RAND() LIMIT 5";
+            var sqlGetResult = $"SELECT * FROM resultTbl WHERE typeof = '{typeof(T).Name}' ORDER BY RAND() LIMIT 8";
             var ResultList = new List<T>();
             try
             {
@@ -354,5 +390,72 @@ namespace Ganko.ApiProcessor
                 conn.Close();
             }
         }
+
+        /// <summary>
+        /// 根据用户名获得用户信息
+        /// </summary>
+        /// <param name="accountName"></param>
+        /// <returns></returns>
+        public User GetUserByAccount(string accountName)
+        {
+            var sqlGetUser = "SELECT * FROM usrLogin WHERE _account = @account";
+            try
+            {
+                MySqlParameter sqlParameter = new MySqlParameter("@account", MySqlDbType.VarChar, 80, accountName);
+                conn.Open();
+                var sqlCmd = new MySqlCommand(sqlGetUser, conn);
+                sqlCmd.Parameters.Add(sqlParameter);
+                var sqlReader = sqlCmd.ExecuteReader();
+                var userInfo = new User();
+                while (sqlReader.Read())
+                {
+                    userInfo.Account = sqlReader.GetString(0);
+                    userInfo.Password = sqlReader.GetString(1);
+                }
+
+                return userInfo;
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        #endregion
+
+        #region Delete Data From DB
+
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="accountName"></param>
+        public void DeleteUserByAccount(string accountName)
+        {
+            var sqlDelUser = "DELETE FROM usrTbl WHERE _account = @account";
+            try
+            {
+                MySqlParameter sqlParameter = new MySqlParameter("@account", MySqlDbType.VarChar, 80, accountName);
+                conn.Open();
+                var sqlCmd = new MySqlCommand(sqlDelUser, conn);
+                sqlCmd.Parameters.Add(sqlParameter);
+                sqlCmd.ExecuteNonQuery();
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        #endregion
     }
 }
