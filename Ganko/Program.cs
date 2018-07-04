@@ -16,7 +16,7 @@ namespace Ganko
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Ganko());
+            Application.Run(new LoginForm());
         }
     }
 }

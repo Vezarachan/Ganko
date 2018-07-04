@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Ganko.Commons.Models;
+using Ganko.Commons.Security;
 using MySql.Data.MySqlClient;
 
 namespace Ganko.ApiProcessor
@@ -34,7 +35,7 @@ namespace Ganko.ApiProcessor
             connectionString.Password = "GankIO";
             connectionString.Pooling = true;
             connectionString.MinimumPoolSize = 0;
-            connectionString.MaximumPoolSize = 50;
+            connectionString.MaximumPoolSize = 200;
             connectionString.ConnectionTimeout = 10;
             conn.ConnectionString = connectionString.ConnectionString;
         }
@@ -52,17 +53,11 @@ namespace Ganko.ApiProcessor
         }
 
         //获得DBHelper实例
-        public static MySQLDBHelper GetInstance()
+        public static MySQLDBHelper Instance
         {
-            MySQLDBHelper dbHelper = new MySQLDBHelper();
-            try
-            {
-                return (MySQLDBHelper) dbHelper.Clone();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
+            get
+            {   MySQLDBHelper dbHelper = new MySQLDBHelper();
+                return (MySQLDBHelper)dbHelper.Clone();
             }
         }
 
@@ -168,6 +163,7 @@ namespace Ganko.ApiProcessor
                 MySqlCommand sqlCmd = new MySqlCommand(sqlmain, conn);
                 sqlCmd.Parameters.AddRange(sqlParameters);
                 sqlCmd.ExecuteNonQuery();
+                sqlCmd.Dispose();
             }
             catch (MySqlException e)
             {
@@ -181,23 +177,84 @@ namespace Ganko.ApiProcessor
         }
 
         /// <summary>
-        /// 注册添加用户
+        /// 注册添加用户，不加密
         /// </summary>
         /// <param name="user"></param>
         public void AddUser(User user)
         {
-            var sqlAdd = "INSERT INTO usrLogin VALUES (@account, @password)";
+            var sqlAddUser = "INSERT INTO usrLogin VALUES (@account, @password)";
             try
             {
+                conn.Open();
                 MySqlParameter[] sqlParameters =
                 {
-                    new MySqlParameter("@account", MySqlDbType.VarChar, 80, user.Account),
-                    new MySqlParameter("@password", MySqlDbType.VarChar, 100, user.Password) 
+                    new MySqlParameter("@account", user.Account),
+                    new MySqlParameter("@password", user.Password)
                 };
-                conn.Open();
-                var sqlCmd = new MySqlCommand(sqlAdd, conn);
+                var sqlCmd = new MySqlCommand(sqlAddUser, conn);
                 sqlCmd.Parameters.AddRange(sqlParameters);
                 sqlCmd.ExecuteNonQuery();
+                sqlCmd.Dispose();
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        /// <summary>
+        /// 更加安全的注册添加用户，将密码解析为32位16进制的MD5散列值
+        /// </summary>
+        /// <param name="user"></param>
+        public void AddUserHash(User user)
+        {
+            var sqlAddUser = "INSERT INTO usrHash VALUES (@account, @password)";
+            try
+            {
+                conn.Open();
+                MySqlParameter[] sqlParameters =
+                {
+                    new MySqlParameter("@account", user.Account),
+                    new MySqlParameter("@password", user.Password),
+                };
+                var sqlCmd = new MySqlCommand(sqlAddUser, conn);
+                sqlCmd.Parameters.AddRange(sqlParameters);
+                sqlCmd.ExecuteNonQuery();
+                sqlCmd.Dispose();
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public void AddUserDetail(UserDetails userDetails)
+        {
+            var sqlAddUser = "INSERT INTO usrDetail VALUES (@account, @age, @company, @position)";
+            try
+            {
+                conn.Open();
+                MySqlParameter[] sqlParameters =
+                {
+                    new MySqlParameter("@account", userDetails.Account),
+                    new MySqlParameter("@age", userDetails.Age),
+                    new MySqlParameter("@company", userDetails.Company),
+                    new MySqlParameter("@position", userDetails.Position) 
+                };
+                var sqlCmd = new MySqlCommand(sqlAddUser, conn);
+                sqlCmd.Parameters.AddRange(sqlParameters);
+                sqlCmd.ExecuteNonQuery();
+                sqlCmd.Dispose();
             }
             catch (MySqlException e)
             {
@@ -243,7 +300,8 @@ namespace Ganko.ApiProcessor
                     result.images = null;
                     ResultList.Add(result);
                 }
-
+                sqlcmd.Dispose();
+                sqlReader.Dispose();
                 return ResultList;
             }
             catch (MySqlException e)
@@ -278,7 +336,8 @@ namespace Ganko.ApiProcessor
                     var imagesUrl = sqlReader.GetString(1);
                     imageUrlList.Add(imagesUrl);
                 }
-
+                sqlcmd.Dispose();
+                sqlReader.Dispose();
                 return imageUrlList;
             }
             catch (MySqlException e)
@@ -324,7 +383,8 @@ namespace Ganko.ApiProcessor
                     result.images = null;
                     ResultList.Add(result);
                 }
-
+                sqlcmd.Dispose();
+                sqlReader.Dispose();
                 return ResultList;
             }
             catch (MySqlException e)
@@ -377,7 +437,8 @@ namespace Ganko.ApiProcessor
                     result.images = null;
                     ResultList.Add(result);
                 }
-
+                sqlCmd.Dispose();
+                sqlReader.Dispose();
                 return ResultList;
             }
             catch (MySqlException e)
@@ -401,8 +462,8 @@ namespace Ganko.ApiProcessor
             var sqlGetUser = "SELECT * FROM usrLogin WHERE _account = @account";
             try
             {
-                MySqlParameter sqlParameter = new MySqlParameter("@account", MySqlDbType.VarChar, 80, accountName);
                 conn.Open();
+                MySqlParameter sqlParameter = new MySqlParameter("@account", accountName);
                 var sqlCmd = new MySqlCommand(sqlGetUser, conn);
                 sqlCmd.Parameters.Add(sqlParameter);
                 var sqlReader = sqlCmd.ExecuteReader();
@@ -412,7 +473,77 @@ namespace Ganko.ApiProcessor
                     userInfo.Account = sqlReader.GetString(0);
                     userInfo.Password = sqlReader.GetString(1);
                 }
+                sqlCmd.Dispose();
+                sqlReader.Dispose();
+                return userInfo;
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
 
+        /// <summary>
+        /// 根据用户名获取用户信息，密码为MD5加密字符串
+        /// </summary>
+        /// <param name="accountName"></param>
+        /// <returns></returns>
+        public User GetUserByAccountHash(string accountName)
+        {
+            var sqlGetUser = "SELECT * FROM usrHash WHERE _account = @account";
+            try
+            {
+                conn.Open();
+                MySqlParameter sqlParameter = new MySqlParameter("@account", accountName);
+                var sqlCmd = new MySqlCommand(sqlGetUser, conn);
+                sqlCmd.Parameters.Add(sqlParameter);
+                var sqlReader = sqlCmd.ExecuteReader();
+                var userInfo = new User();
+                while (sqlReader.Read())
+                {
+                    userInfo.Account = sqlReader.GetString(0);
+                    userInfo.Password = sqlReader.GetString(1);
+                }
+                sqlCmd.Dispose();
+                sqlReader.Dispose();
+                return userInfo;
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public UserDetails GetUserDetailsByAccount(string accountName)
+        {
+            var sqlGetUser = "SELECT * FROM usrDetail WHERE _account = @account";
+            try
+            {
+                conn.Open();
+                MySqlParameter sqlParameter = new MySqlParameter("@account", accountName);
+                var sqlCmd = new MySqlCommand(sqlGetUser, conn);
+                sqlCmd.Parameters.Add(sqlParameter);
+                var sqlReader = sqlCmd.ExecuteReader();
+                var userInfo = new UserDetails();
+                while (sqlReader.Read())
+                {
+                    userInfo.Account = sqlReader.GetString(0);
+                    userInfo.Age = sqlReader.GetUInt16(1);
+                    userInfo.Company = sqlReader.GetString(2);
+                    userInfo.Position = sqlReader.GetString(3);
+                }
+                sqlCmd.Dispose();
+                sqlReader.Dispose();
                 return userInfo;
             }
             catch (MySqlException e)

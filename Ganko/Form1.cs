@@ -14,6 +14,8 @@ using Ganko.Commons.Models;
 using Gecko;
 using MaterialSkin;
 using MaterialSkin.Controls;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Ganko
 {
@@ -22,13 +24,17 @@ namespace Ganko
         //声明Api处理模块
         private APIProcessor apiProcessor = APIProcessor.GetInstance();
         //声明数据处理模块（MySQL）
-        private MySQLDBHelper dbHelper = MySQLDBHelper.GetInstance();
+        private MySQLDBHelper dbHelper = MySQLDBHelper.Instance;
         //声明数据处理模块（SQLite）
-        private SQLiteDBHelper sqLiteDbHelper = SQLiteDBHelper.GetInstance();
+        //private SQLiteDBHelper sqLiteDbHelper = SQLiteDBHelper.GetInstance();
         //声明UI管理器
         private readonly MaterialSkinManager materialSkinManager = MaterialSkinManager.Instance;
         //加载FireFox的xulrunner插件路径
         private readonly string xulrunnerpath = Application.StartupPath + "/xulrunner";
+
+        //判定设备是否联网
+        [DllImport("wininet")]
+        private extern static bool InternetGetConnectedState(out int conState, int reder);
         public Ganko()
         {
             InitializeComponent();
@@ -45,7 +51,7 @@ namespace Ganko
         //更换主题使用的下标
         private int themeIndex;
         //更换颜色主题
-        public void button1_Click(object sender, EventArgs e)
+        public void changeTheme_Click(object sender, EventArgs e)
         {
             themeIndex++;
             if (themeIndex > 4)
@@ -91,35 +97,51 @@ namespace Ganko
             return content;
         }
 
+        public string accountName;
         //开启应用时，加载内容
         private async void Ganko_Load(object sender, EventArgs e)
         {
-            var iOScontent = await GetResult<iOS>(iOSindex);
-            iOSs = iOScontent;
-            if (iOScontent != null)
-            {
-                iOScontent.ForEach(item => { listBox1.Items.Add(item.desc); });
-            }
+            UserDetails userInfo = dbHelper.GetUserDetailsByAccount(accountName);
+            AccountName.Text = accountName;
+            ageInfo.Text = userInfo.Age.ToString();
+            companyInfo.Text = userInfo.Company;
+            posInfo.Text = userInfo.Position;
+            userPicture.Image = Image.FromFile(Application.StartupPath + "\\IMG\\github.png");
 
-            var Androidcontent = await GetResult<Android>(androidindex);
-            androids = Androidcontent;
-            if (Androidcontent != null)
+            int state;
+            if (InternetGetConnectedState(out state, 0))
             {
-                Androidcontent.ForEach(item => { listBox2.Items.Add(item.desc); });
-            }
+                var iOScontent = await GetResult<iOS>(iOSindex);
+                iOSs = iOScontent;
+                if (iOScontent != null)
+                {
+                    iOScontent.ForEach(item => { listBox1.Items.Add(item.desc); });
+                }
 
-            var FrontEndcontent = await GetResult<前端>(frontendindex);
-            frontends = FrontEndcontent;
-            if (FrontEndcontent != null)
-            {
-                FrontEndcontent.ForEach(item => { listBox3.Items.Add(item.desc); });
-            }
+                var Androidcontent = await GetResult<Android>(androidindex);
+                androids = Androidcontent;
+                if (Androidcontent != null)
+                {
+                    Androidcontent.ForEach(item => { listBox2.Items.Add(item.desc); });
+                }
 
-            var appcontent = await GetResult<App>(appindex);
-            apps = appcontent;
-            if (appcontent != null)
+                var FrontEndcontent = await GetResult<前端>(frontendindex);
+                frontends = FrontEndcontent;
+                if (FrontEndcontent != null)
+                {
+                    FrontEndcontent.ForEach(item => { listBox3.Items.Add(item.desc); });
+                }
+
+                var appcontent = await GetResult<App>(appindex);
+                apps = appcontent;
+                if (appcontent != null)
+                {
+                    appcontent.ForEach(item => { listBox4.Items.Add(item.desc); });
+                }
+            }
+            else
             {
-                appcontent.ForEach(item => { listBox4.Items.Add(item.desc); });
+                MessageBox.Show("Failed to get internet", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -310,33 +332,44 @@ namespace Ganko
             ContentReLoad();
         }
 
-        private void dbTest_Click(object sender, EventArgs e)
-        {
-            var conn = dbHelper.Conn;
-            try
-            {
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
-                {
-                    MessageBox.Show("Successful");
-                }
-            }
-            catch (SQLiteException exception)
-            {
-                Console.WriteLine(exception);
-                throw;
-            }
-            finally
-            {
-                conn.Close();
-            }
-        }
-
-        private void Star_Click(object sender, EventArgs e)
+        //收藏按钮
+        public void Star_Click(object sender, EventArgs e)
         {
             if (materialTabControl1.SelectedTab == tabPage1)
             {
-                
+                ListBox listBox = (ListBox)tabPage1.Controls["listBox1"];
+
+            }
+        }
+
+        //图片路径生成
+        private string imageRelativePath(string name) => $"{Application.StartupPath}\\IMG\\{name}.png";
+
+        //图片下标
+        private int icoIndex;
+        //更改头像
+        private void ChangeIco_Click(object sender, EventArgs e)
+        {
+            icoIndex++;
+            if (icoIndex > 3)
+            {
+                icoIndex = 0;
+            }
+
+            switch (icoIndex)
+            {
+                case 0:
+                    userPicture.Image = Image.FromFile(imageRelativePath("github"));
+                    break;
+                case 1:
+                    userPicture.Image = Image.FromFile(imageRelativePath("github(1)"));
+                    break;
+                case 2:
+                    userPicture.Image = Image.FromFile(imageRelativePath("rabbit"));
+                    break;
+                case 3:
+                    userPicture.Image = Image.FromFile(imageRelativePath("Twitter"));
+                    break;
             }
         }
     }

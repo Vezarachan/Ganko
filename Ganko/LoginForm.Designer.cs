@@ -32,8 +32,8 @@ namespace Ganko
         {
             this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
-            this.materialSingleLineTextField1 = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.materialSingleLineTextField2 = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.accountForm = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.passwordForm = new MaterialSkin.Controls.MaterialSingleLineTextField();
             this.SignInBtn = new System.Windows.Forms.Button();
             this.LoginCancel = new System.Windows.Forms.Button();
             this.materialFlatButton1 = new MaterialSkin.Controls.MaterialFlatButton();
@@ -65,35 +65,35 @@ namespace Ganko
             this.materialLabel2.TabIndex = 1;
             this.materialLabel2.Text = "Password";
             // 
-            // materialSingleLineTextField1
+            // accountForm
             // 
-            this.materialSingleLineTextField1.Depth = 0;
-            this.materialSingleLineTextField1.Hint = "Your Account@_@";
-            this.materialSingleLineTextField1.Location = new System.Drawing.Point(112, 121);
-            this.materialSingleLineTextField1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialSingleLineTextField1.Name = "materialSingleLineTextField1";
-            this.materialSingleLineTextField1.PasswordChar = '\0';
-            this.materialSingleLineTextField1.SelectedText = "";
-            this.materialSingleLineTextField1.SelectionLength = 0;
-            this.materialSingleLineTextField1.SelectionStart = 0;
-            this.materialSingleLineTextField1.Size = new System.Drawing.Size(167, 23);
-            this.materialSingleLineTextField1.TabIndex = 2;
-            this.materialSingleLineTextField1.UseSystemPasswordChar = false;
+            this.accountForm.Depth = 0;
+            this.accountForm.Hint = "Your Account@_@";
+            this.accountForm.Location = new System.Drawing.Point(112, 121);
+            this.accountForm.MouseState = MaterialSkin.MouseState.HOVER;
+            this.accountForm.Name = "accountForm";
+            this.accountForm.PasswordChar = '\0';
+            this.accountForm.SelectedText = "";
+            this.accountForm.SelectionLength = 0;
+            this.accountForm.SelectionStart = 0;
+            this.accountForm.Size = new System.Drawing.Size(167, 23);
+            this.accountForm.TabIndex = 2;
+            this.accountForm.UseSystemPasswordChar = false;
             // 
-            // materialSingleLineTextField2
+            // passwordForm
             // 
-            this.materialSingleLineTextField2.Depth = 0;
-            this.materialSingleLineTextField2.Hint = "Your Password( ://";
-            this.materialSingleLineTextField2.Location = new System.Drawing.Point(112, 171);
-            this.materialSingleLineTextField2.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialSingleLineTextField2.Name = "materialSingleLineTextField2";
-            this.materialSingleLineTextField2.PasswordChar = '\0';
-            this.materialSingleLineTextField2.SelectedText = "";
-            this.materialSingleLineTextField2.SelectionLength = 0;
-            this.materialSingleLineTextField2.SelectionStart = 0;
-            this.materialSingleLineTextField2.Size = new System.Drawing.Size(167, 23);
-            this.materialSingleLineTextField2.TabIndex = 3;
-            this.materialSingleLineTextField2.UseSystemPasswordChar = false;
+            this.passwordForm.Depth = 0;
+            this.passwordForm.Hint = "Your Password( ://";
+            this.passwordForm.Location = new System.Drawing.Point(112, 171);
+            this.passwordForm.MouseState = MaterialSkin.MouseState.HOVER;
+            this.passwordForm.Name = "passwordForm";
+            this.passwordForm.PasswordChar = '·';
+            this.passwordForm.SelectedText = "";
+            this.passwordForm.SelectionLength = 0;
+            this.passwordForm.SelectionStart = 0;
+            this.passwordForm.Size = new System.Drawing.Size(167, 23);
+            this.passwordForm.TabIndex = 3;
+            this.passwordForm.UseSystemPasswordChar = false;
             // 
             // SignInBtn
             // 
@@ -108,6 +108,7 @@ namespace Ganko
             this.SignInBtn.TabIndex = 4;
             this.SignInBtn.Text = "Sign In";
             this.SignInBtn.UseVisualStyleBackColor = false;
+            this.SignInBtn.Click += new System.EventHandler(this.SignInBtn_Click);
             // 
             // LoginCancel
             // 
@@ -139,6 +140,7 @@ namespace Ganko
             this.materialFlatButton1.TabIndex = 6;
             this.materialFlatButton1.Text = "Sign Up";
             this.materialFlatButton1.UseVisualStyleBackColor = true;
+            this.materialFlatButton1.Click += new System.EventHandler(this.signUpBtn_Click);
             // 
             // LoginForm
             // 
@@ -148,8 +150,8 @@ namespace Ganko
             this.Controls.Add(this.materialFlatButton1);
             this.Controls.Add(this.LoginCancel);
             this.Controls.Add(this.SignInBtn);
-            this.Controls.Add(this.materialSingleLineTextField2);
-            this.Controls.Add(this.materialSingleLineTextField1);
+            this.Controls.Add(this.passwordForm);
+            this.Controls.Add(this.accountForm);
             this.Controls.Add(this.materialLabel2);
             this.Controls.Add(this.materialLabel1);
             this.Name = "LoginForm";
@@ -163,8 +165,8 @@ namespace Ganko
 
         private MaterialSkin.Controls.MaterialLabel materialLabel1;
         private MaterialSkin.Controls.MaterialLabel materialLabel2;
-        private MaterialSkin.Controls.MaterialSingleLineTextField materialSingleLineTextField1;
-        private MaterialSkin.Controls.MaterialSingleLineTextField materialSingleLineTextField2;
+        private MaterialSkin.Controls.MaterialSingleLineTextField accountForm;
+        private MaterialSkin.Controls.MaterialSingleLineTextField passwordForm;
         private System.Windows.Forms.Button SignInBtn;
         private System.Windows.Forms.Button LoginCancel;
         private MaterialSkin.Controls.MaterialFlatButton materialFlatButton1;
