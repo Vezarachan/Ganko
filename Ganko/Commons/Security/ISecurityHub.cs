@@ -11,5 +11,7 @@ namespace Ganko.Commons.Security
         string GetHashMD5(string pwd);
 
         bool VerifyPassword(string pwd, string verificationCode);
+
+        bool VerifyIsUserExist(string account)
     }
 }

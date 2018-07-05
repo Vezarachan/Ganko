@@ -101,6 +101,9 @@ namespace Ganko
         //开启应用时，加载内容
         private async void Ganko_Load(object sender, EventArgs e)
         {
+            LoginForm loginForm = new LoginForm();
+            loginForm.ShowDialog();
+            //用户信息初始化
             UserDetails userInfo = dbHelper.GetUserDetailsByAccount(accountName);
             AccountName.Text = accountName;
             ageInfo.Text = userInfo.Age.ToString();
@@ -108,6 +111,7 @@ namespace Ganko
             posInfo.Text = userInfo.Position;
             userPicture.Image = Image.FromFile(Application.StartupPath + "\\IMG\\github.png");
 
+            //主窗体数据初始化
             int state;
             if (InternetGetConnectedState(out state, 0))
             {

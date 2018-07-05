@@ -61,8 +61,8 @@ namespace Ganko
                 {
                     Ganko ganko = new Ganko();
                     ganko.accountName = account;
-                    this.Hide();
-                    ganko.Show();
+                    this.Close();
+                    //ganko.ShowDialog();
                     
                 }
                 else
