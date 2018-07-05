@@ -50,11 +50,39 @@
 
 该项目采用了MySQL作为开发环境数据库，使用JSON.Net解析JSON，将FireFox（火狐）浏览器内核Gecko作为WebBrowser的浏览器内核，项目包含Commons和Resource文件夹，Commons用于将一些基本功能模块化，目前具有注册登录模块、数据库操作模块、API处理模块、安全处理模块、实体类库，而Resource用于存储图片等静态内容。
 
+**项目结构**
+
 ![pic7](http://ouq4wp7r4.bkt.clouddn.com/GankoPic7.png)
 
 
 
+**类图**
 
+![classGraph](http://ouq4wp7r4.bkt.clouddn.com/GankoClassDiagram.jpg)
 
+**APIProcessor**
 
+![APIProcessor](http://ouq4wp7r4.bkt.clouddn.com/APIProcessor.png)
 
+**DBHelper**
+
+![DBHelper](http://ouq4wp7r4.bkt.clouddn.com/DBHelper.png)
+
+**Models**
+
+![Models](http://ouq4wp7r4.bkt.clouddn.com/Models.png)
+
+**ResultModels**
+
+![Result Models](http://ouq4wp7r4.bkt.clouddn.com/ResultModel.png)
+
+**SecurityProcessor**
+
+![SecurityProcessor](http://ouq4wp7r4.bkt.clouddn.com/SecurityProcessor.png)
+
+### To do List
+
+- [x] 登录/注册功能
+- [x] 按类别获取内容功能
+- [ ] 按日期获取内容功能
+- [ ] 本地收藏功能
