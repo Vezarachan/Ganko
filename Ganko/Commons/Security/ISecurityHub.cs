@@ -12,6 +12,6 @@ namespace Ganko.Commons.Security
 
         bool VerifyPassword(string pwd, string verificationCode);
 
-        bool VerifyIsUserExist(string account)
+        bool VerifyIsUserExist(string account);
     }
 }
