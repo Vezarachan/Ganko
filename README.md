@@ -4,7 +4,7 @@
 >
 > Actually it is a curriculum design for a course called C# programming design. 
 >
-> Ganko是一个gank.io
+> Ganko是一个gank.io的客户端demo。
 
 ---
 
